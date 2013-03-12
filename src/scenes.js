@@ -50,11 +50,7 @@ Crafty.scene('Game', function() {
 
   // Play a ringing sound to indicate the start of the journey
   Crafty.audio.play('ring');
-
-  // Move the chicken around
-
-
-
+  
   // Show the victory screen once all villages are visisted
   this.show_victory = this.bind('VillageVisited', function() {
     if (!Crafty('Village').length) {

@@ -125,18 +125,26 @@ Crafty.c('Village', {
 
 Crafty.c('Chicken', {
   init: function() {
-    this.requires('Actor, Color, Solid')
-      .color('yellow');
+    this.requires('Actor, Color, Collision')
+      .color('yellow')
+      .attr({ dX: 2 })
+      .bind('EnterFrame', function(){
+        console.log(this.x, this.dX);
+        this.x += this.dX;
+        this.onHit('Solid', function(){
+          this.dX *= -1;
+        })
+      })
+  },
+  // Stops the movement
+  stopMovement: function() {
+    this._speed = 0;
+    if (this._movement) {
+      this.x -= this._movement.x;
+      this.y -= this._movement.y;
+    }
   },
 });
-
-
-
-
-
-
-
-
 
 
 

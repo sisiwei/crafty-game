@@ -134,7 +134,7 @@ Crafty.c('Chicken', {
   init: function() {
     this.requires('Actor, Color, Collision')
       .color('yellow')
-      .attr({ dX: 2 })
+      .attr({ dX: 5*Math.random() })
       .bind('EnterFrame', function(){
         this.x += this.dX;
         this.onHit('Solid', function(){
@@ -157,12 +157,3 @@ Crafty.c('Chicken', {
     Crafty.trigger('VictoryTrigger', this);
   } 
 });
-
-
-
-
-
-
-
-
-

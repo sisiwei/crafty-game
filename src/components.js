@@ -55,6 +55,7 @@ Crafty.c('PlayerCharacter', {
       .fourway(2)
       .stopOnSolids()
       .onHit('Village', this.visitVillage)
+      .onHit('Chicken', this.catchChicken)
       // These next lines define our four animations
       //  each call to .animate specifies:
       //  - the name of the animation
@@ -104,6 +105,12 @@ Crafty.c('PlayerCharacter', {
   visitVillage: function(data) {
     villlage = data[0].obj;
     villlage.visit();
+  },
+
+  // Respond to this player catching a chicken
+  catchChicken: function(data){
+    chicken = data[0].obj;
+    chicken.caught();
   }
 });
 
@@ -117,7 +124,7 @@ Crafty.c('Village', {
   visit: function() {
     this.destroy();
     Crafty.audio.play('knock');
-    Crafty.trigger('VillageVisited', this);
+    Crafty.trigger('VictoryTrigger', this);
   }
 });
 
@@ -129,14 +136,13 @@ Crafty.c('Chicken', {
       .color('yellow')
       .attr({ dX: 2 })
       .bind('EnterFrame', function(){
-        console.log(this.x, this.dX);
         this.x += this.dX;
         this.onHit('Solid', function(){
           this.dX *= -1;
         })
       })
   },
-  // Stops the movement
+  // Stops the movement when hitting a tree or village
   stopMovement: function() {
     this._speed = 0;
     if (this._movement) {
@@ -144,6 +150,12 @@ Crafty.c('Chicken', {
       this.y -= this._movement.y;
     }
   },
+
+  // Process catching the chicken
+  caught: function(){
+    this.destroy();
+    Crafty.trigger('VictoryTrigger', this);
+  } 
 });
 
 

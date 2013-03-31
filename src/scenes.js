@@ -13,8 +13,8 @@ Crafty.scene('Game', function() {
 
   // Player character, placed at 5, 5 on our grid
   this.player = Crafty.e('PlayerCharacter').at(5, 5);
-  this.chicken = Crafty.e('Chicken').at(5, 6);
-  this.occupied[this.chicken.at().x][this.chicken.at().y] = true;
+  // this.chicken = Crafty.e('Chicken').at(5, 6);
+  // this.occupied[this.chicken.at().x][this.chicken.at().y] = true;
   this.occupied[this.player.at().x][this.player.at().y] = true;
 
   // Place a tree at every edge square on our grid of 16x16 tiles
@@ -48,12 +48,24 @@ Crafty.scene('Game', function() {
     }
   }
 
+  // Generate five chickens on the map in random locations
+  var max_chickens = 5;
+  for (var x = 0; x < Game.map_grid.width; x++) {
+    for (var y = 0; y < Game.map_grid.height; y++) {
+      if (Math.random() < 0.03) {
+        if (Crafty('Chicken').length < max_chickens && !this.occupied[x][y]) {
+          Crafty.e('Chicken').at(x, y);
+        }
+      }
+    }
+  }
+
   // Play a ringing sound to indicate the start of the journey
   Crafty.audio.play('ring');
   
   // Show the victory screen once all villages are visisted
-  this.show_victory = this.bind('VillageVisited', function() {
-    if (!Crafty('Village').length) {
+  this.show_victory = this.bind('VictoryTrigger', function() {
+    if (!Crafty('Village').length && !Crafty('Chicken').length) {
       Crafty.scene('Victory');
     }
   });
@@ -61,7 +73,7 @@ Crafty.scene('Game', function() {
   // Remove our event binding from above so that we don't
   //  end up having multiple redundant event watchers after
   //  multiple restarts of the game
-  this.unbind('VillageVisited', this.show_victory);
+  this.unbind('VictoryTrigger', this.show_victory);
 });
 
 
@@ -71,7 +83,7 @@ Crafty.scene('Game', function() {
 Crafty.scene('Victory', function() {
   // Display some text in celebration of the victory
   Crafty.e('2D, DOM, Text')
-    .text('All villages visited!')
+    .text('All villages visited and chicken caught!')
     .attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
     .css($text_css);
 
